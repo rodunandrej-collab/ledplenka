@@ -4,7 +4,5 @@ data/
 .env.local
 .DS_Store
 *.log
-*.mp4
-*.MP4
 
 
