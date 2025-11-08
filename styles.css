@@ -27,6 +27,13 @@ body {
     color: var(--white);
     background-color: var(--dark-bg);
     overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+}
+
+html {
+    overflow-x: hidden;
+    max-width: 100vw;
 }
 
 .container {
@@ -380,15 +387,22 @@ body {
 @media (max-width: 768px) {
     .hero-features-visual {
         min-height: 350px;
+        overflow-x: hidden;
     }
     .led-film-graphic {
         height: 350px;
         flex-direction: column;
         gap: 1rem;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
     }
     .film-strip {
-        width: 300px;
+        width: 100%;
+        max-width: 300px;
         height: 200px;
+        transform: none !important;
+        margin: 0 auto;
     }
 }
 
@@ -775,15 +789,24 @@ body {
 }
 
 @media (max-width: 968px) {
+    .exploded-view {
+        padding: 3rem 0;
+        overflow-x: hidden;
+    }
+    
     .exploded-diagram {
         min-height: auto;
-        padding: 2rem 0;
+        padding: 2rem 1rem;
+        overflow-x: hidden;
+        width: 100%;
+        max-width: 100%;
     }
     
     .center-layers {
         width: 100%;
-        height: 300px;
-        margin-bottom: 3rem;
+        max-width: 100%;
+        height: 250px;
+        margin-bottom: 2rem;
     }
     
     .layer-bottom,
@@ -792,25 +815,60 @@ body {
         position: relative;
         bottom: auto;
         left: auto;
+        right: auto;
         transform: none;
-        margin: -30px auto 0;
+        margin: 0 auto;
+        width: 100% !important;
+        max-width: 100%;
     }
     
     .layer-info {
-        position: static;
-        margin: 2rem auto;
-        max-width: 100%;
-        padding: 0 1rem;
+        position: static !important;
+        margin: 1.5rem 0;
+        max-width: 100% !important;
+        padding: 0;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
     }
     
     .layer-info-01,
     .layer-info-02,
     .layer-info-03,
     .layer-info-04 {
-        top: auto;
-        bottom: auto;
-        left: auto;
-        right: auto;
+        position: static !important;
+        top: auto !important;
+        bottom: auto !important;
+        left: auto !important;
+        right: auto !important;
+    }
+    
+    .layer-number {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+    
+    .layer-text {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .layer-text h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .layer-text p {
+        font-size: 0.9rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 }
 
@@ -1410,6 +1468,9 @@ body {
     .hero-subtitle {
         font-size: 1.1rem;
         margin-bottom: 2rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
     }
     
     .hero {
@@ -1497,8 +1558,22 @@ body {
 }
 
 @media (max-width: 640px) {
+    * {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
     .container {
         padding: 0 15px;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+    
+    body, html {
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
     }
     
     .header {
@@ -1523,6 +1598,9 @@ body {
     .hero-subtitle {
         font-size: 1rem;
         margin-bottom: 1.5rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
     }
     
     .hero-features-visual {
@@ -1534,11 +1612,17 @@ body {
         height: 250px;
         flex-direction: column;
         gap: 0.8rem;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
     }
     
     .film-strip {
-        width: 200px;
+        width: 100%;
+        max-width: 250px;
         height: 140px;
+        transform: none !important;
+        margin: 0 auto;
     }
     
     .section-heading,
@@ -1558,10 +1642,14 @@ body {
     
     .tech-subtitle-large {
         font-size: 1.1rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
     
     .tech-subtitle-small {
         font-size: 1rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
     
     .feature-image-wrapper {
@@ -1683,40 +1771,81 @@ body {
         font-size: 0.9rem;
     }
     
+    .exploded-view {
+        padding: 2rem 0;
+        overflow-x: hidden;
+    }
+    
     .exploded-diagram {
         min-height: auto;
-        padding: 2rem 0;
+        padding: 1rem 0.5rem;
+        overflow-x: hidden;
+        width: 100%;
+        max-width: 100%;
     }
     
     .center-layers {
         width: 100%;
-        height: 250px;
+        max-width: 100%;
+        height: 200px;
+        margin-bottom: 1.5rem;
     }
     
     .layer-bottom {
-        width: 100%;
-        height: 250px;
+        width: 100% !important;
+        max-width: 100%;
+        height: 200px;
     }
     
     .layer-info {
-        position: static;
-        margin: 1.5rem 0;
-        max-width: 100%;
+        position: static !important;
+        margin: 1rem 0;
+        max-width: 100% !important;
         padding: 0;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        display: flex;
+        flex-direction: row;
+        gap: 0.8rem;
+    }
+    
+    .layer-info-01,
+    .layer-info-02,
+    .layer-info-03,
+    .layer-info-04 {
+        position: static !important;
+        top: auto !important;
+        bottom: auto !important;
+        left: auto !important;
+        right: auto !important;
     }
     
     .layer-number {
-        width: 50px;
-        height: 50px;
-        min-width: 50px;
-        font-size: 1.5rem;
+        width: 45px;
+        height: 45px;
+        min-width: 45px;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+    
+    .layer-text {
+        flex: 1;
+        min-width: 0;
     }
     
     .layer-text h3 {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        margin-bottom: 0.4rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
     
     .layer-text p {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 }

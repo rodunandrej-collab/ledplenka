@@ -114,9 +114,22 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-document.querySelectorAll('.film-strip-1').forEach(el => el.style.setProperty('--rotation', '-5deg'));
-document.querySelectorAll('.film-strip-2').forEach(el => el.style.setProperty('--rotation', '2deg'));
-document.querySelectorAll('.film-strip-3').forEach(el => el.style.setProperty('--rotation', '-3deg'));
+// Apply rotation only on desktop (not mobile)
+if (window.innerWidth > 768) {
+    document.querySelectorAll('.film-strip-1').forEach(el => el.style.setProperty('--rotation', '-5deg'));
+    document.querySelectorAll('.film-strip-2').forEach(el => el.style.setProperty('--rotation', '2deg'));
+    document.querySelectorAll('.film-strip-3').forEach(el => el.style.setProperty('--rotation', '-3deg'));
+}
+
+// Remove rotation on resize if mobile
+window.addEventListener('resize', function() {
+    if (window.innerWidth <= 768) {
+        document.querySelectorAll('.film-strip').forEach(el => {
+            el.style.setProperty('--rotation', '0deg');
+            el.style.transform = 'none';
+        });
+    }
+});
 
 animateLEDFilm();
 
