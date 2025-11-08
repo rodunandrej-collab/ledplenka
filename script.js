@@ -2,10 +2,32 @@
 document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const nav = document.querySelector('.nav');
+    const navLinks = document.querySelectorAll('.nav a');
     
-    if (mobileMenuToggle) {
-        mobileMenuToggle.addEventListener('click', function() {
+    if (mobileMenuToggle && nav) {
+        // Toggle menu
+        mobileMenuToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
             nav.classList.toggle('active');
+            document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
+        });
+        
+        // Close menu when clicking on a link
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                nav.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (nav.classList.contains('active') && 
+                !nav.contains(e.target) && 
+                !mobileMenuToggle.contains(e.target)) {
+                nav.classList.remove('active');
+                document.body.style.overflow = '';
+            }
         });
     }
 });
