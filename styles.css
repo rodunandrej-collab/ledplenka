@@ -572,9 +572,9 @@ body {
 .layer-bottom {
     width: 550px;
     height: 350px;
-    bottom: 50%;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, 50%);
+    transform: translate(-50%, -50%);
     z-index: 1;
 }
 
@@ -616,23 +616,23 @@ body {
 
 /* Позиционирование компонентов */
 .layer-info-01 {
-    top: 5%;
-    left: 5%;
+    top: 10%;
+    left: 0;
 }
 
 .layer-info-02 {
-    top: 5%;
-    right: 5%;
+    top: 10%;
+    right: 0;
 }
 
 .layer-info-03 {
-    bottom: 15%;
-    left: 5%;
+    bottom: 10%;
+    left: 0;
 }
 
 .layer-info-04 {
-    bottom: 15%;
-    right: 5%;
+    bottom: 10%;
+    right: 0;
 }
 
 /* Адаптивность */
