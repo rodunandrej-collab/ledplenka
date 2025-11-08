@@ -121,9 +121,16 @@ sudo apt update
 sudo apt install certbot python3-certbot-nginx -y
 
 # Получить сертификат (используйте Punycode!)
-sudo certbot --nginx -d xn--80aafq0a1a.xn--p1ai -d www.xn--80aafq0a1a.xn--p1ai
+# Вариант 1: С email (рекомендуется)
+sudo certbot --nginx -d xn--80aica3aau6a6a.xn--p1ai -d www.xn--80aica3aau6a6a.xn--p1ai --email ваш-email@example.com --agree-tos --non-interactive
 
-# ⚠️ Замените xn--80aafq0a1a.xn--p1ai на ваш реальный Punycode!
+# Вариант 2: Без email
+sudo certbot --nginx -d xn--80aica3aau6a6a.xn--p1ai -d www.xn--80aica3aau6a6a.xn--p1ai --register-unsafely-without-email --agree-tos --non-interactive
+
+# Вариант 3: Интерактивный режим
+sudo certbot --nginx -d xn--80aica3aau6a6a.xn--p1ai -d www.xn--80aica3aau6a6a.xn--p1ai
+
+# ⚠️ Замените ваш-email@example.com на ваш реальный email!
 
 # Следовать инструкциям:
 # - Ввести email

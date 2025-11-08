@@ -72,12 +72,28 @@ sudo systemctl reload nginx
 
 ### Шаг 3: Установить SSL с Punycode
 
+**Вариант А: С email (рекомендуется):**
 ```bash
-# Используйте Punycode версию домена
-sudo certbot --nginx -d xn--80aafq0a1a.xn--p1ai -d www.xn--80aafq0a1a.xn--p1ai
+# Используйте Punycode версию домена и укажите email
+sudo certbot --nginx -d xn--80aafq0a1a.xn--p1ai -d www.xn--80aafq0a1a.xn--p1ai --email ваш-email@example.com --agree-tos --non-interactive
 ```
 
-**Важно:** Замените `xn--80aafq0a1a.xn--p1ai` на реальный Punycode вашего домена!
+**Вариант Б: Без email (не рекомендуется, но работает):**
+```bash
+# Без email адреса
+sudo certbot --nginx -d xn--80aafq0a1a.xn--p1ai -d www.xn--80aafq0a1a.xn--p1ai --register-unsafely-without-email --agree-tos --non-interactive
+```
+
+**Вариант В: Интерактивный режим:**
+```bash
+# Certbot спросит email интерактивно
+sudo certbot --nginx -d xn--80aafq0a1a.xn--p1ai -d www.xn--80aafq0a1a.xn--p1ai
+# Введите email когда попросит
+```
+
+**Важно:** 
+- Замените `xn--80aafq0a1a.xn--p1ai` на реальный Punycode вашего домена!
+- Замените `ваш-email@example.com` на ваш реальный email
 
 ---
 
