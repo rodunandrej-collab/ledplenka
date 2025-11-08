@@ -71,6 +71,19 @@ body {
     border-radius: 8px;
 }
 
+.logo-img {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    max-width: 200px;
+}
+
+.footer .logo-img {
+    height: 60px;
+    max-width: 220px;
+}
+
 .logo-text {
     font-size: 1.5rem;
     font-weight: bold;
@@ -109,14 +122,55 @@ body {
 }
 
 .presentation-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1.2rem;
+    background: #8B0000;
     color: var(--white);
-    font-size: 0.85rem;
+    font-size: 0.95rem;
+    font-weight: 600;
     text-decoration: none;
-    opacity: 0.8;
+    border-radius: 8px;
+    transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba(139, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.presentation-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.presentation-link:hover::before {
+    opacity: 1;
 }
 
 .presentation-link:hover {
-    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 0, 0, 0.4);
+}
+
+.presentation-icon {
+    width: 20px;
+    height: 20px;
+    stroke: var(--white);
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+    flex-shrink: 0;
+}
+
+.presentation-link span {
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
 }
 
 .btn-calculate {
@@ -1342,5 +1396,23 @@ body {
         flex-direction: column;
         gap: 1rem;
         text-align: center;
+    }
+    
+    .logo-img {
+        height: 40px;
+    }
+    
+    .footer .logo-img {
+        height: 50px;
+    }
+    
+    .presentation-link {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .presentation-icon {
+        width: 18px;
+        height: 18px;
     }
 }
