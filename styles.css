@@ -58,12 +58,19 @@ html {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.header-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-}
+    .header-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+    }
+    
+    @media (max-width: 640px) {
+        .header-top {
+            gap: 0.5rem;
+            flex-wrap: nowrap;
+        }
+    }
 
 .logo {
     display: flex;
@@ -942,10 +949,18 @@ html {
     margin-bottom: 1.5rem;
 }
 
-.category-header h3 {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
+    .category-header h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    
+    @media (max-width: 640px) {
+        .category-header h3 {
+            font-size: 1.2rem;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+    }
 
 .expand-btn {
     width: 36px;
@@ -1563,16 +1578,31 @@ html {
         box-sizing: border-box;
     }
     
+    html {
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
+        position: relative;
+    }
+    
+    body {
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
+        position: relative;
+    }
+    
     .container {
         padding: 0 15px;
         width: 100%;
         max-width: 100%;
         overflow-x: hidden;
+        position: relative;
     }
     
-    body, html {
-        width: 100%;
-        max-width: 100vw;
+    /* Предотвратить горизонтальный скролл */
+    section, div, header, footer {
+        max-width: 100%;
         overflow-x: hidden;
     }
     
@@ -1593,6 +1623,10 @@ html {
     .hero-title {
         font-size: 1.6rem;
         margin-bottom: 1.5rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        hyphens: auto;
+        max-width: 100%;
     }
     
     .hero-subtitle {
@@ -1629,6 +1663,9 @@ html {
     .section-title {
         font-size: 1.8rem;
         margin-bottom: 1.5rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
     }
     
     .section-link {
@@ -1638,6 +1675,9 @@ html {
     
     .tech-main-title {
         font-size: 1.8rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
     }
     
     .tech-subtitle-large {
@@ -1659,6 +1699,9 @@ html {
     .tech-feature-card h3 {
         padding: 1rem;
         font-size: 1.1rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
     }
     
     .principle-card {
@@ -1686,11 +1729,16 @@ html {
     
     .order-form-container {
         padding: 1.5rem;
+        max-width: 100%;
+        overflow-x: hidden;
     }
     
     .form-group input {
         padding: 1rem;
         font-size: 0.95rem;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
     
     .btn-primary {
@@ -1746,6 +1794,9 @@ html {
     
     .test-drive-cta h2 {
         font-size: 1.8rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
     }
     
     .test-drive-cta p {
@@ -1755,6 +1806,9 @@ html {
     .faq-question {
         padding: 1.5rem;
         font-size: 1.1rem;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
     }
     
     .faq-answer {
