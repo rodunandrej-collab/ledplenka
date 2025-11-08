@@ -520,8 +520,9 @@ body {
 .exploded-diagram {
     position: relative;
     min-height: 700px;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
+    padding: 0 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -616,23 +617,23 @@ body {
 
 /* Позиционирование компонентов */
 .layer-info-01 {
-    top: 10%;
-    left: 0;
+    top: 15%;
+    left: 2%;
 }
 
 .layer-info-02 {
-    top: 10%;
-    right: 0;
+    top: 15%;
+    right: 2%;
 }
 
 .layer-info-03 {
-    bottom: 10%;
-    left: 0;
+    bottom: 15%;
+    left: 2%;
 }
 
 .layer-info-04 {
-    bottom: 10%;
-    right: 0;
+    bottom: 15%;
+    right: 2%;
 }
 
 /* Адаптивность */
