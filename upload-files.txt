@@ -1,0 +1,42 @@
+СПИСОК ФАЙЛОВ ДЛЯ ЗАГРУЗКИ НА ХОСТИНГ
+=====================================
+
+ОБЯЗАТЕЛЬНО загрузите эти файлы:
+
+📁 КОРНЕВАЯ ПАПКА:
+- index.html
+- styles.css
+- script.js
+- server.js
+- package.json
+- package-lock.json
+- admin.html
+- admin.css
+- admin.js
+- .htaccess (опционально)
+
+📁 ПАПКА images/ (загрузите всю папку):
+- IMG_4643.MP4
+- IMG_4644.MP4
+- IMG_4645.MP4
+- IMG_4646.MP4
+- IMG_4647.MP4
+- IMG_4650.MP4
+- IMG_4651.MP4
+- IMG_4652.MP4
+- IMG_4653.MP4
+- IMG_4654.MP4
+- IMG_4655.MP4
+- photo_2025-11-04_02-54-51.jpg
+- photo_2025-11-04_02-54-52.jpg
+
+📁 ПАПКА data/ (создайте на сервере, если её нет):
+- orders.json (создастся автоматически, но можно создать пустой файл)
+
+❌ НЕ загружайте:
+- node_modules/ (установится на сервере через npm install)
+- .git/
+- README.md
+- DEPLOY-INSTRUCTIONS.md
+- RUSSIAN-HOSTING-GUIDE.md
+
