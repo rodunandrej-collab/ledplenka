@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
 const { Pool } = require('pg');
+const multer = require('multer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -57,6 +58,35 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
+
+// Multer configuration for video uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        const uploadDir = path.join(__dirname, 'images');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        const videoId = req.body.videoId || 'video';
+        const ext = path.extname(file.originalname);
+        const filename = `${videoId}_${Date.now()}${ext}`;
+        cb(null, filename);
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 100 * 1024 * 1024 }, // 100MB limit
+    fileFilter: function (req, file, cb) {
+        if (file.mimetype.startsWith('video/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Только видео файлы разрешены'));
+        }
+    }
+});
 
 // Routes
 app.get('/', (req, res) => {
@@ -266,6 +296,155 @@ app.post('/api/admin/login', (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 });
+
+// Video management endpoints
+const VIDEOS_CONFIG_FILE = path.join(__dirname, 'data', 'videos.json');
+
+// Get all videos configuration
+app.get('/api/videos', (req, res) => {
+    try {
+        if (fs.existsSync(VIDEOS_CONFIG_FILE)) {
+            const data = fs.readFileSync(VIDEOS_CONFIG_FILE, 'utf8');
+            const videos = JSON.parse(data);
+            res.json({ success: true, data: videos });
+        } else {
+            res.json({ success: true, data: {} });
+        }
+    } catch (error) {
+        console.error('Error loading videos:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Update video path
+app.put('/api/videos/:videoId', (req, res) => {
+    try {
+        const { videoId } = req.params;
+        const { path: videoPath, selector } = req.body;
+        
+        if (!videoPath) {
+            return res.status(400).json({ success: false, error: 'Path is required' });
+        }
+        
+        // Load current config
+        let videos = {};
+        if (fs.existsSync(VIDEOS_CONFIG_FILE)) {
+            const data = fs.readFileSync(VIDEOS_CONFIG_FILE, 'utf8');
+            videos = JSON.parse(data);
+        }
+        
+        // Update video config
+        videos[videoId] = {
+            path: videoPath,
+            selector: selector,
+            updatedAt: new Date().toISOString()
+        };
+        
+        // Save config
+        const dataDir = path.dirname(VIDEOS_CONFIG_FILE);
+        if (!fs.existsSync(dataDir)) {
+            fs.mkdirSync(dataDir, { recursive: true });
+        }
+        fs.writeFileSync(VIDEOS_CONFIG_FILE, JSON.stringify(videos, null, 2));
+        
+        // Update HTML file
+        updateVideoInHTML(selector, videoPath);
+        
+        res.json({ success: true, data: videos[videoId] });
+    } catch (error) {
+        console.error('Error updating video:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Upload video file
+app.post('/api/videos/upload', upload.single('video'), (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, error: 'No file uploaded' });
+        }
+        
+        const videoPath = `images/${req.file.filename}`;
+        res.json({ success: true, path: videoPath, filename: req.file.filename });
+    } catch (error) {
+        console.error('Error uploading video:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Helper function to update video in HTML
+function updateVideoInHTML(selector, newPath) {
+    try {
+        const htmlPath = path.join(__dirname, 'index.html');
+        let htmlContent = fs.readFileSync(htmlPath, 'utf8');
+        
+        // Simple regex replacement for video sources
+        // This is a basic implementation - could be improved with proper HTML parsing
+        const videoSourceRegex = new RegExp(`(<source\\s+src=["'])([^"']+)(["']\\s+type=["']video/mp4["']>)`, 'g');
+        
+        // For now, we'll update all matching selectors
+        // In a production app, you'd use a proper HTML parser
+        if (selector) {
+            // Extract the class/id from selector and update accordingly
+            if (selector.includes('film-strip-1')) {
+                htmlContent = htmlContent.replace(
+                    /(<div class="film-strip film-strip-1">[\s\S]*?<source src=")([^"]+)(" type="video\/mp4">)/,
+                    `$1${newPath}$3`
+                );
+            } else if (selector.includes('film-strip-2')) {
+                htmlContent = htmlContent.replace(
+                    /(<div class="film-strip film-strip-2">[\s\S]*?<source src=")([^"]+)(" type="video\/mp4">)/,
+                    `$1${newPath}$3`
+                );
+            } else if (selector.includes('film-strip-3')) {
+                htmlContent = htmlContent.replace(
+                    /(<div class="film-strip film-strip-3">[\s\S]*?<source src=")([^"]+)(" type="video\/mp4">)/,
+                    `$1${newPath}$3`
+                );
+            } else if (selector.includes('feature-img-1')) {
+                htmlContent = htmlContent.replace(
+                    /(<div class="feature-img feature-img-1">[\s\S]*?<source src=")([^"]+)(" type="video\/mp4">)/,
+                    `$1${newPath}$3`
+                );
+            } else if (selector.includes('feature-img-2')) {
+                htmlContent = htmlContent.replace(
+                    /(<div class="feature-img feature-img-2">[\s\S]*?<source src=")([^"]+)(" type="video\/mp4">)/,
+                    `$1${newPath}$3`
+                );
+            } else if (selector.includes('feature-img-3')) {
+                htmlContent = htmlContent.replace(
+                    /(<div class="feature-img feature-img-3">[\s\S]*?<source src=")([^"]+)(" type="video\/mp4">)/,
+                    `$1${newPath}$3`
+                );
+            } else if (selector.includes('feature-1')) {
+                htmlContent = htmlContent.replace(
+                    /(<div class="principle-card feature-1">[\s\S]*?<source src=")([^"]+)(" type="video\/mp4">)/,
+                    `$1${newPath}$3`
+                );
+            } else if (selector.includes('feature-2')) {
+                htmlContent = htmlContent.replace(
+                    /(<div class="principle-card feature-2">[\s\S]*?<source src=")([^"]+)(" type="video\/mp4">)/,
+                    `$1${newPath}$3`
+                );
+            } else if (selector.includes('feature-3')) {
+                htmlContent = htmlContent.replace(
+                    /(<div class="principle-card feature-3">[\s\S]*?<source src=")([^"]+)(" type="video\/mp4">)/,
+                    `$1${newPath}$3`
+                );
+            } else if (selector.includes('layer-bottom')) {
+                htmlContent = htmlContent.replace(
+                    /(<div class="layer-visual layer-bottom">[\s\S]*?<source src=")([^"]+)(" type="video\/mp4">)/,
+                    `$1${newPath}$3`
+                );
+            }
+        }
+        
+        fs.writeFileSync(htmlPath, htmlContent, 'utf8');
+    } catch (error) {
+        console.error('Error updating HTML:', error);
+        throw error;
+    }
+}
 
 // Health check endpoint
 app.get('/health', async (req, res) => {

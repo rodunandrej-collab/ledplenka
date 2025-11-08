@@ -27,6 +27,8 @@ function showAdminPanel() {
     document.getElementById('adminPanel').classList.remove('hidden');
     loadOrders();
     updateStats();
+    setupTabs();
+    loadVideos();
 }
 
 // Login form handler
@@ -62,6 +64,229 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
 function logout() {
     sessionStorage.removeItem('adminAuth');
     showLoginScreen();
+}
+
+// Tabs functionality
+function setupTabs() {
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetTab = btn.getAttribute('data-tab');
+            
+            // Remove active class from all buttons and contents
+            tabButtons.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding content
+            btn.classList.add('active');
+            document.getElementById(targetTab + 'Tab').classList.add('active');
+        });
+    });
+}
+
+// Video management
+const VIDEO_CONFIG = {
+    hero: [
+        { id: 'hero-1', title: 'Hero видео 1', location: 'Hero секция - левое видео', selector: '.film-strip-1 video source' },
+        { id: 'hero-2', title: 'Hero видео 2', location: 'Hero секция - среднее видео', selector: '.film-strip-2 video source' },
+        { id: 'hero-3', title: 'Hero видео 3', location: 'Hero секция - правое видео', selector: '.film-strip-3 video source' }
+    ],
+    technology: [
+        { id: 'tech-1', title: 'Технология видео 1', location: 'Technology секция - карточка 1', selector: '.feature-img-1 video source' },
+        { id: 'tech-2', title: 'Технология видео 2', location: 'Technology секция - карточка 2', selector: '.feature-img-2 video source' },
+        { id: 'tech-3', title: 'Технология видео 3', location: 'Technology секция - карточка 3', selector: '.feature-img-3 video source' }
+    ],
+    principle: [
+        { id: 'principle-1', title: 'Принцип работы видео 1', location: 'Principle секция - карточка 1', selector: '.feature-1 .principle-img video source' },
+        { id: 'principle-2', title: 'Принцип работы видео 2', location: 'Principle секция - карточка 2', selector: '.feature-2 .principle-img video source' },
+        { id: 'principle-3', title: 'Принцип работы видео 3', location: 'Principle секция - карточка 3', selector: '.feature-3 .principle-img video source' }
+    ],
+    exploded: [
+        { id: 'exploded-1', title: 'Exploded View видео', location: 'Exploded View секция - центральное видео', selector: '.layer-bottom video source' }
+    ]
+};
+
+async function loadVideos() {
+    try {
+        const response = await fetch(`${API_BASE}/api/videos`);
+        const result = await response.json();
+        
+        if (result.success) {
+            displayVideos(result.data || {});
+        } else {
+            // Use default config if no saved data
+            displayVideos({});
+        }
+    } catch (error) {
+        console.error('Error loading videos:', error);
+        displayVideos({});
+    }
+}
+
+function displayVideos(savedVideos) {
+    const videosGrid = document.getElementById('videosGrid');
+    videosGrid.innerHTML = '';
+    
+    // Flatten all video configs
+    const allVideos = [
+        ...VIDEO_CONFIG.hero,
+        ...VIDEO_CONFIG.technology,
+        ...VIDEO_CONFIG.principle,
+        ...VIDEO_CONFIG.exploded
+    ];
+    
+    allVideos.forEach(videoConfig => {
+        const savedVideo = savedVideos[videoConfig.id] || {};
+        const currentPath = savedVideo.path || getCurrentVideoPath(videoConfig.selector);
+        
+        const videoCard = document.createElement('div');
+        videoCard.className = 'video-card';
+        videoCard.innerHTML = `
+            <div class="video-card-header">
+                <div>
+                    <div class="video-card-title">${videoConfig.title}</div>
+                    <div class="video-card-location">${videoConfig.location}</div>
+                </div>
+            </div>
+            <div class="video-preview-container">
+                <video autoplay loop muted playsinline>
+                    <source src="${currentPath}" type="video/mp4">
+                </video>
+            </div>
+            <div class="video-input-group">
+                <label>Путь к видео (например: images/video.mp4)</label>
+                <input type="text" class="video-path-input" data-video-id="${videoConfig.id}" 
+                       value="${currentPath}" placeholder="images/video.mp4">
+            </div>
+            <div class="video-input-group">
+                <label>Или загрузите новый файл</label>
+                <input type="file" class="video-file-input" data-video-id="${videoConfig.id}" 
+                       accept="video/mp4,video/webm,video/ogg">
+            </div>
+            <div class="video-actions">
+                <button class="btn-save-video" data-video-id="${videoConfig.id}" 
+                        data-selector="${videoConfig.selector}">Сохранить</button>
+            </div>
+        `;
+        
+        videosGrid.appendChild(videoCard);
+    });
+    
+    // Setup event listeners
+    setupVideoListeners();
+}
+
+function getCurrentVideoPath(selector) {
+    // Default paths based on selector
+    const defaultPaths = {
+        '.film-strip-1 video source': 'images/IMG_4643.MP4',
+        '.film-strip-2 video source': 'images/IMG_4644.MP4',
+        '.film-strip-3 video source': 'images/IMG_4645.MP4',
+        '.feature-img-1 video source': 'images/IMG_4643.MP4',
+        '.feature-img-2 video source': 'images/IMG_4644.MP4',
+        '.feature-img-3 video source': 'images/IMG_4645.MP4',
+        '.feature-1 .principle-img video source': 'images/IMG_4651.MP4',
+        '.feature-2 .principle-img video source': 'images/IMG_4647.MP4',
+        '.feature-3 .principle-img video source': 'images/IMG_4650.MP4',
+        '.layer-bottom video source': 'images/IMG_4651.MP4'
+    };
+    
+    return defaultPaths[selector] || 'images/IMG_4643.MP4';
+}
+
+function setupVideoListeners() {
+    // File input change
+    document.querySelectorAll('.video-file-input').forEach(input => {
+        input.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const videoId = e.target.getAttribute('data-video-id');
+                uploadVideoFile(videoId, file);
+            }
+        });
+    });
+    
+    // Save button click
+    document.querySelectorAll('.btn-save-video').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const videoId = btn.getAttribute('data-video-id');
+            const selector = btn.getAttribute('data-selector');
+            const pathInput = document.querySelector(`.video-path-input[data-video-id="${videoId}"]`);
+            const newPath = pathInput.value.trim();
+            
+            if (!newPath) {
+                alert('Укажите путь к видео');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = 'Сохранение...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/videos/${videoId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        path: newPath,
+                        selector: selector
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Видео успешно обновлено!');
+                    loadVideos(); // Reload to show updated video
+                } else {
+                    alert('Ошибка: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error saving video:', error);
+                alert('Ошибка при сохранении видео');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Сохранить';
+            }
+        });
+    });
+}
+
+async function uploadVideoFile(videoId, file) {
+    const formData = new FormData();
+    formData.append('video', file);
+    formData.append('videoId', videoId);
+    
+    const pathInput = document.querySelector(`.video-path-input[data-video-id="${videoId}"]`);
+    const saveBtn = document.querySelector(`.btn-save-video[data-video-id="${videoId}"]`);
+    
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Загрузка...';
+    
+    try {
+        const response = await fetch(`${API_BASE}/api/videos/upload`, {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            pathInput.value = result.path;
+            alert('Видео успешно загружено! Теперь нажмите "Сохранить" для применения.');
+        } else {
+            alert('Ошибка загрузки: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error uploading video:', error);
+        alert('Ошибка при загрузке видео');
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Сохранить';
+    }
 }
 
 // Load orders from server
