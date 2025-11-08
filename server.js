@@ -218,6 +218,45 @@ app.patch('/api/orders/:id', async (req, res) => {
     }
 });
 
+// Update order comment
+app.patch('/api/orders/:id/comment', async (req, res) => {
+    try {
+        const { comment } = req.body;
+        
+        if (USE_DATABASE && pool) {
+            // Check if comment column exists, if not add it
+            try {
+                await pool.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS comment TEXT');
+            } catch (e) {
+                // Column might already exist
+            }
+            
+            const result = await pool.query(
+                'UPDATE orders SET comment = $1 WHERE id = $2 RETURNING *',
+                [comment || '', req.params.id]
+            );
+            if (result.rows.length === 0) {
+                return res.status(404).json({ success: false, error: 'Order not found' });
+            }
+            res.json({ success: true, data: result.rows[0] });
+        } else {
+            // JSON fallback
+            const DATA_FILE = path.join(__dirname, 'data', 'orders.json');
+            const orders = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+            const orderIndex = orders.findIndex(o => o.id === parseInt(req.params.id));
+            if (orderIndex === -1) {
+                return res.status(404).json({ success: false, error: 'Order not found' });
+            }
+            orders[orderIndex].comment = comment || '';
+            fs.writeFileSync(DATA_FILE, JSON.stringify(orders, null, 2));
+            res.json({ success: true, data: orders[orderIndex] });
+        }
+    } catch (error) {
+        console.error('Error updating order comment:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 // Delete order
 app.delete('/api/orders/:id', async (req, res) => {
     try {
@@ -442,6 +481,205 @@ function updateVideoInHTML(selector, newPath) {
         fs.writeFileSync(htmlPath, htmlContent, 'utf8');
     } catch (error) {
         console.error('Error updating HTML:', error);
+        throw error;
+    }
+}
+
+// Text management endpoints
+const TEXTS_CONFIG_FILE = path.join(__dirname, 'data', 'texts.json');
+
+// Get all texts configuration
+app.get('/api/texts', (req, res) => {
+    try {
+        if (fs.existsSync(TEXTS_CONFIG_FILE)) {
+            const data = fs.readFileSync(TEXTS_CONFIG_FILE, 'utf8');
+            const texts = JSON.parse(data);
+            res.json({ success: true, data: texts });
+        } else {
+            res.json({ success: true, data: {} });
+        }
+    } catch (error) {
+        console.error('Error loading texts:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Update texts
+app.put('/api/texts', (req, res) => {
+    try {
+        const { texts } = req.body;
+        
+        if (!texts || typeof texts !== 'object') {
+            return res.status(400).json({ success: false, error: 'Texts object is required' });
+        }
+        
+        // Save texts config
+        const dataDir = path.dirname(TEXTS_CONFIG_FILE);
+        if (!fs.existsSync(dataDir)) {
+            fs.mkdirSync(dataDir, { recursive: true });
+        }
+        fs.writeFileSync(TEXTS_CONFIG_FILE, JSON.stringify(texts, null, 2));
+        
+        // Update HTML file
+        updateTextsInHTML(texts);
+        
+        res.json({ success: true, message: 'Texts updated successfully' });
+    } catch (error) {
+        console.error('Error updating texts:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Helper function to update texts in HTML
+function updateTextsInHTML(texts) {
+    try {
+        const htmlPath = path.join(__dirname, 'index.html');
+        let htmlContent = fs.readFileSync(htmlPath, 'utf8');
+        
+        Object.keys(texts).forEach(textId => {
+            const textData = texts[textId];
+            const { text, selector } = textData;
+            
+            if (!text || !selector) return;
+            
+            // Escape special regex characters in text
+            const escapedText = text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            
+            // Update based on selector type
+            if (selector.includes('h1') || selector.includes('.hero-title')) {
+                htmlContent = htmlContent.replace(
+                    /(<h1[^>]*class="hero-title"[^>]*>)(.*?)(<\/h1>)/s,
+                    `$1${text}$3`
+                );
+            } else if (selector.includes('p') && selector.includes('.hero-subtitle')) {
+                htmlContent = htmlContent.replace(
+                    /(<p[^>]*class="hero-subtitle"[^>]*>)(.*?)(<\/p>)/s,
+                    `$1${text}$3`
+                );
+            } else if (selector.includes('.btn-calculate')) {
+                htmlContent = htmlContent.replace(
+                    /(<button[^>]*class="[^"]*btn-calculate[^"]*"[^>]*>)(.*?)(<\/button>)/s,
+                    `$1${text}$3`
+                );
+            } else if (selector.includes('.hero-cta .btn-large')) {
+                htmlContent = htmlContent.replace(
+                    /(<button[^>]*class="[^"]*btn-large[^"]*btn-outline[^"]*"[^>]*>)(.*?)(<\/button>)/s,
+                    (match, open, oldText, close) => {
+                        if (match.includes('hero-cta')) {
+                            return open + text + close;
+                        }
+                        return match;
+                    }
+                );
+            } else if (selector.includes('.btn-center')) {
+                htmlContent = htmlContent.replace(
+                    /(<button[^>]*class="btn-center"[^>]*>)(.*?)(<\/button>)/s,
+                    `$1${text}$3`
+                );
+            } else if (selector.includes('.btn-test-drive')) {
+                htmlContent = htmlContent.replace(
+                    /(<button[^>]*class="btn-test-drive"[^>]*>)(.*?)(<\/button>)/s,
+                    `$1${text}$3`
+                );
+            } else if (selector.includes('.order-form button[type="submit"]')) {
+                htmlContent = htmlContent.replace(
+                    /(<button[^>]*type="submit"[^>]*class="[^"]*btn-primary[^"]*btn-large[^"]*"[^>]*>)(.*?)(<\/button>)/s,
+                    `$1${text}$3`
+                );
+            } else if (selector.includes('.tech-main-title')) {
+                htmlContent = htmlContent.replace(
+                    /(<h2[^>]*class="tech-main-title"[^>]*>)(.*?)(<\/h2>)/s,
+                    `$1${text}$3`
+                );
+            } else if (selector.includes('.tech-subtitle-large')) {
+                htmlContent = htmlContent.replace(
+                    /(<p[^>]*class="tech-subtitle-large"[^>]*>)(.*?)(<\/p>)/s,
+                    `$1${text}$3`
+                );
+            } else if (selector.includes('.tech-subtitle-small')) {
+                htmlContent = htmlContent.replace(
+                    /(<p[^>]*class="tech-subtitle-small"[^>]*>)(.*?)(<\/p>)/s,
+                    `$1${text}$3`
+                );
+            } else if (selector.includes('.section-heading') && !selector.includes('#application')) {
+                htmlContent = htmlContent.replace(
+                    /(<h2[^>]*class="section-heading"[^>]*>)(.*?)(<\/h2>)/s,
+                    (match, open, oldText, close) => {
+                        // Only replace if it's in principle section (first occurrence)
+                        if (match.includes('Как LED')) {
+                            return open + text + close;
+                        }
+                        return match;
+                    }
+                );
+            } else if (selector.includes('#application .section-heading')) {
+                htmlContent = htmlContent.replace(
+                    /(<h2[^>]*class="section-heading"[^>]*>)(.*?)(<\/h2>)/s,
+                    (match, open, oldText, close) => {
+                        if (match.includes('Решение для')) {
+                            return open + text + close;
+                        }
+                        return match;
+                    }
+                );
+            } else if (selector.includes('.section-link')) {
+                htmlContent = htmlContent.replace(
+                    /(<p[^>]*class="section-link"[^>]*>)(.*?)(<\/p>)/s,
+                    `$1${text}$3`
+                );
+            } else if (selector.includes('.test-drive-cta h2')) {
+                htmlContent = htmlContent.replace(
+                    /(<h2[^>]*>)(.*?Хотите попробовать\?.*?)(<\/h2>)/s,
+                    `$1${text}$3`
+                );
+            } else if (selector.includes('.test-drive-cta p')) {
+                htmlContent = htmlContent.replace(
+                    /(<p[^>]*>)(.*?Закажите бесплатный тест-драйв.*?)(<\/p>)/s,
+                    (match, open, oldText, close) => {
+                        if (match.includes('test-drive-cta')) {
+                            return open + text + close;
+                        }
+                        return match;
+                    }
+                );
+            } else if (selector.includes('.faq .section-title')) {
+                htmlContent = htmlContent.replace(
+                    /(<h2[^>]*class="section-title"[^>]*>)(.*?Часто задаваемые вопросы.*?)(<\/h2>)/s,
+                    `$1${text}$3`
+                );
+            } else if (selector.includes('.order-section .section-title')) {
+                htmlContent = htmlContent.replace(
+                    /(<h2[^>]*class="section-title"[^>]*>)(.*?Получите расчет стоимости.*?)(<\/h2>)/s,
+                    `$1${text}$3`
+                );
+            } else if (selector.includes('.tech-feature-card:nth-child(1) h3')) {
+                htmlContent = htmlContent.replace(
+                    /(<h3[^>]*>)(.*?Прозрачность до 95%.*?)(<\/h3>)/s,
+                    (match, open, oldText, close) => {
+                        // First tech feature card
+                        const matches = htmlContent.match(/<h3[^>]*>.*?<\/h3>/g);
+                        if (matches && matches[0] === match) {
+                            return open + text + close;
+                        }
+                        return match;
+                    }
+                );
+            } else if (selector.includes('.tech-feature-card:nth-child(2) h3')) {
+                htmlContent = htmlContent.replace(
+                    /(<h3[^>]*>)(.*?Монтаж прямо на стекло.*?)(<\/h3>)/s,
+                    `$1${text}$3`
+                );
+            } else if (selector.includes('.tech-feature-card:nth-child(3) h3')) {
+                htmlContent = htmlContent.replace(
+                    /(<h3[^>]*>)(.*?Подвесной монтаж.*?)(<\/h3>)/s,
+                    `$1${text}$3`
+                );
+            }
+        });
+        
+        fs.writeFileSync(htmlPath, htmlContent, 'utf8');
+    } catch (error) {
+        console.error('Error updating HTML texts:', error);
         throw error;
     }
 }

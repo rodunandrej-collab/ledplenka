@@ -29,6 +29,7 @@ function showAdminPanel() {
     updateStats();
     setupTabs();
     loadVideos();
+    loadTexts();
 }
 
 // Login form handler
@@ -311,7 +312,7 @@ function loadOrders(filter = 'all') {
             const tbody = document.getElementById('ordersTableBody');
             
             if (orders.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" class="no-orders">Заказов пока нет</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="9" class="no-orders">Заказов пока нет</td></tr>';
                 return;
             }
             
@@ -330,6 +331,9 @@ function loadOrders(filter = 'all') {
                             <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Завершено</option>
                         </select>
                     </td>
+                    <td>
+                        <textarea class="order-comment" data-order-id="${order.id}" rows="2" placeholder="Добавить комментарий..." onblur="saveOrderComment(${order.id}, this.value)">${order.comment || ''}</textarea>
+                    </td>
                     <td class="actions-cell">
                         <button class="btn-action btn-delete" onclick="deleteOrder(${order.id})">Удалить</button>
                     </td>
@@ -339,8 +343,32 @@ function loadOrders(filter = 'all') {
         .catch(error => {
             console.error('Error loading orders:', error);
             const tbody = document.getElementById('ordersTableBody');
-            tbody.innerHTML = '<tr><td colspan="8" class="no-orders">Ошибка загрузки заказов</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="9" class="no-orders">Ошибка загрузки заказов</td></tr>';
         });
+}
+
+// Save order comment
+function saveOrderComment(orderId, comment) {
+    fetch(`${API_BASE}/api/orders/${orderId}/comment`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ comment: comment || '' })
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            // Optional: show success message
+            console.log('Comment saved');
+        } else {
+            alert('Ошибка сохранения комментария: ' + result.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error saving comment:', error);
+        alert('Ошибка при сохранении комментария');
+    });
 }
 
 // Update order status
@@ -486,6 +514,186 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Text management
+const TEXT_CONFIG = {
+    hero: [
+        { id: 'hero-title', label: 'Главный заголовок', location: 'Hero секция', selector: '.hero-title', type: 'text' },
+        { id: 'hero-subtitle', label: 'Подзаголовок', location: 'Hero секция', selector: '.hero-subtitle', type: 'textarea' }
+    ],
+    buttons: [
+        { id: 'btn-calculate', label: 'Кнопка "Рассчитать стоимость"', location: 'Хедер', selector: '.btn-calculate', type: 'text' },
+        { id: 'btn-hero-cta', label: 'Кнопка "Получить расчет" (Hero)', location: 'Hero секция', selector: '.hero-cta .btn-large', type: 'text' },
+        { id: 'btn-principle', label: 'Кнопка "Получить расчет" (Principle)', location: 'Principle секция', selector: '.btn-center', type: 'text' },
+        { id: 'btn-test-drive', label: 'Кнопка "Заказать тест-драйв"', location: 'Application секция', selector: '.btn-test-drive', type: 'text' },
+        { id: 'btn-order-form', label: 'Кнопка формы заказа', location: 'Order секция', selector: '.order-form button[type="submit"]', type: 'text' }
+    ],
+    sections: [
+        { id: 'tech-title', label: 'Заголовок Technology', location: 'Technology секция', selector: '.tech-main-title', type: 'text' },
+        { id: 'tech-subtitle-large', label: 'Большой подзаголовок Technology', location: 'Technology секция', selector: '.tech-subtitle-large', type: 'textarea' },
+        { id: 'tech-subtitle-small', label: 'Малый подзаголовок Technology', location: 'Technology секция', selector: '.tech-subtitle-small', type: 'textarea' },
+        { id: 'principle-title', label: 'Заголовок Principle', location: 'Principle секция', selector: '.section-heading', type: 'text' },
+        { id: 'principle-link', label: 'Ссылка Principle', location: 'Principle секция', selector: '.section-link', type: 'text' },
+        { id: 'application-title', label: 'Заголовок Application', location: 'Application секция', selector: '#application .section-heading', type: 'text' },
+        { id: 'test-drive-title', label: 'Заголовок "Хотите попробовать?"', location: 'Application секция', selector: '.test-drive-cta h2', type: 'text' },
+        { id: 'test-drive-text', label: 'Текст тест-драйва', location: 'Application секция', selector: '.test-drive-cta p', type: 'textarea' },
+        { id: 'faq-title', label: 'Заголовок FAQ', location: 'FAQ секция', selector: '.faq .section-title', type: 'text' },
+        { id: 'order-title', label: 'Заголовок формы заказа', location: 'Order секция', selector: '.order-section .section-title', type: 'text' }
+    ],
+    features: [
+        { id: 'tech-feature-1', label: 'Особенность 1 (Technology)', location: 'Technology - карточка 1', selector: '.tech-feature-card:nth-child(1) h3', type: 'text' },
+        { id: 'tech-feature-2', label: 'Особенность 2 (Technology)', location: 'Technology - карточка 2', selector: '.tech-feature-card:nth-child(2) h3', type: 'text' },
+        { id: 'tech-feature-3', label: 'Особенность 3 (Technology)', location: 'Technology - карточка 3', selector: '.tech-feature-card:nth-child(3) h3', type: 'text' }
+    ]
+};
+
+async function loadTexts() {
+    try {
+        const response = await fetch(`${API_BASE}/api/texts`);
+        const result = await response.json();
+        
+        if (result.success) {
+            displayTexts(result.data || {});
+        } else {
+            displayTexts({});
+        }
+    } catch (error) {
+        console.error('Error loading texts:', error);
+        displayTexts({});
+    }
+}
+
+function displayTexts(savedTexts) {
+    const textsContainer = document.getElementById('textsContainer');
+    textsContainer.innerHTML = '';
+    
+    // Group texts by category
+    const categories = {
+        'Hero секция': TEXT_CONFIG.hero,
+        'Кнопки': TEXT_CONFIG.buttons,
+        'Заголовки секций': TEXT_CONFIG.sections,
+        'Особенности': TEXT_CONFIG.features
+    };
+    
+    Object.keys(categories).forEach(categoryName => {
+        const categoryTexts = categories[categoryName];
+        
+        const textGroup = document.createElement('div');
+        textGroup.className = 'text-group';
+        
+        const groupTitle = document.createElement('div');
+        groupTitle.className = 'text-group-title';
+        groupTitle.textContent = categoryName;
+        textGroup.appendChild(groupTitle);
+        
+        categoryTexts.forEach(textConfig => {
+            const savedText = savedTexts[textConfig.id] || {};
+            const currentText = savedText.text || getCurrentText(textConfig.selector);
+            
+            const textItem = document.createElement('div');
+            textItem.className = 'text-item';
+            
+            const label = document.createElement('label');
+            label.className = 'text-item-label';
+            label.innerHTML = `${textConfig.label} <span class="text-location">(${textConfig.location})</span>`;
+            textItem.appendChild(label);
+            
+            const input = document.createElement(textConfig.type === 'textarea' ? 'textarea' : 'input');
+            input.className = `text-item-input ${textConfig.type === 'textarea' ? 'textarea' : ''}`;
+            input.type = textConfig.type === 'textarea' ? 'textarea' : 'text';
+            input.value = currentText;
+            input.setAttribute('data-text-id', textConfig.id);
+            input.setAttribute('data-selector', textConfig.selector);
+            textItem.appendChild(input);
+            
+            textGroup.appendChild(textItem);
+        });
+        
+        textsContainer.appendChild(textGroup);
+    });
+    
+    // Add save all button
+    const saveAllBtn = document.createElement('button');
+    saveAllBtn.className = 'btn-save-all';
+    saveAllBtn.textContent = 'Сохранить все изменения';
+    saveAllBtn.addEventListener('click', saveAllTexts);
+    textsContainer.appendChild(saveAllBtn);
+}
+
+function getCurrentText(selector) {
+    // Default texts based on selector
+    const defaultTexts = {
+        '.hero-title': 'LED-плёнка — прозрачный экран для витрин с вау-эффектом и запуском за 1 день',
+        '.hero-subtitle': 'Создавайте заметные витрины с гибким светодиодным экраном, который клеится на стекло и превращает любую поверхность в LED дисплей для эффективной рекламы. Привлекает клиентов и экономит ваш бюджет.',
+        '.btn-calculate': 'Рассчитать стоимость',
+        '.hero-cta .btn-large': 'Получить расчет',
+        '.btn-center': 'Получить расчет',
+        '.btn-test-drive': 'Заказать тест-драйв',
+        '.order-form button[type="submit"]': 'Получить расчет',
+        '.tech-main-title': 'Новая технология, которая превращает стекло в экран',
+        '.tech-subtitle-large': 'LED-плёнка — прозрачный и гибкий экран на стекло с установкой за 1 день: привлекает клиентов, окупается за сезон — закажите бесплатный расчёт!',
+        '.tech-subtitle-small': 'Такой плёночный экран идеально подходит для витрин и фасадов, привлекая внимание и сокращая расходы на рекламу.',
+        '.section-heading': 'Как LED-плёнка превращает стекло в экран?',
+        '.section-link': 'Принцип работы →',
+        '#application .section-heading': 'Решение для любого пространства',
+        '.test-drive-cta h2': 'Хотите попробовать?',
+        '.test-drive-cta p': 'Закажите бесплатный тест-драйв LED-плёнки на вашем объекте',
+        '.faq .section-title': 'Часто задаваемые вопросы',
+        '.order-section .section-title': 'Получите расчет стоимости',
+        '.tech-feature-card:nth-child(1) h3': 'Прозрачность до 95%, не закрывает обзор',
+        '.tech-feature-card:nth-child(2) h3': 'Монтаж прямо на стекло',
+        '.tech-feature-card:nth-child(3) h3': 'Подвесной монтаж'
+    };
+    
+    return defaultTexts[selector] || '';
+}
+
+async function saveAllTexts() {
+    const inputs = document.querySelectorAll('.text-item-input');
+    const textsToSave = {};
+    
+    inputs.forEach(input => {
+        const textId = input.getAttribute('data-text-id');
+        const selector = input.getAttribute('data-selector');
+        const text = input.value.trim();
+        
+        if (textId && selector) {
+            textsToSave[textId] = {
+                text: text,
+                selector: selector
+            };
+        }
+    });
+    
+    const saveBtn = document.querySelector('.btn-save-all');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Сохранение...';
+    
+    try {
+        const response = await fetch(`${API_BASE}/api/texts`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ texts: textsToSave })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('Все тексты успешно обновлены!');
+            loadTexts(); // Reload to show updated texts
+        } else {
+            alert('Ошибка: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error saving texts:', error);
+        alert('Ошибка при сохранении текстов');
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Сохранить все изменения';
+    }
+}
 
 // Initialize
 checkAuth();

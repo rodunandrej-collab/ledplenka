@@ -75,6 +75,7 @@
                 <div class="tabs">
                     <button class="tab-btn active" data-tab="orders">Заказы</button>
                     <button class="tab-btn" data-tab="videos">Управление видео</button>
+                    <button class="tab-btn" data-tab="texts">Редактирование текстов</button>
                 </div>
 
                 <div id="ordersTab" class="tab-content active">
@@ -91,21 +92,22 @@
 
                         <div class="orders-table-wrapper">
                             <table class="orders-table">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Имя</th>
-                                        <th>Телефон</th>
-                                        <th>Email</th>
-                                        <th>Площадь</th>
-                                        <th>Дата</th>
-                                        <th>Статус</th>
-                                        <th>Действия</th>
-                                    </tr>
-                                </thead>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Имя</th>
+                                    <th>Телефон</th>
+                                    <th>Email</th>
+                                    <th>Площадь</th>
+                                    <th>Дата</th>
+                                    <th>Статус</th>
+                                    <th>Комментарий</th>
+                                    <th>Действия</th>
+                                </tr>
+                            </thead>
                                 <tbody id="ordersTableBody">
                                     <tr>
-                                        <td colspan="8" class="no-orders">Заказов пока нет</td>
+                                        <td colspan="9" class="no-orders">Заказов пока нет</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -122,6 +124,19 @@
                         
                         <div class="videos-grid" id="videosGrid">
                             <!-- Видео будут загружены через JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div id="textsTab" class="tab-content">
+                    <div class="texts-section">
+                        <div class="section-header">
+                            <h2>Редактирование текстов</h2>
+                            <p class="section-description">Измените тексты на странице и текст на кнопках</p>
+                        </div>
+                        
+                        <div class="texts-container" id="textsContainer">
+                            <!-- Тексты будут загружены через JavaScript -->
                         </div>
                     </div>
                 </div>
