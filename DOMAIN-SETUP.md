@@ -98,21 +98,40 @@ sudo systemctl restart nginx
 
 ## Шаг 4: Установить SSL сертификат (HTTPS)
 
-Для установки бесплатного SSL сертификата Let's Encrypt:
+**⚠️ ВАЖНО:** Certbot не поддерживает кириллические домены напрямую. Нужно использовать **Punycode**.
+
+### Конвертировать домен в Punycode:
+
+```bash
+# Вариант 1: Через Python
+python3 -c "import idna; print(idna.encode('ацелотлед.рф').decode('ascii'))"
+
+# Вариант 2: Установить утилиту idn
+sudo apt install idn -y
+idn ацелотлед.рф
+```
+
+**Результат будет примерно:** `xn--80aafq0a1a.xn--p1ai` (замените на ваш результат!)
+
+### Установить SSL с Punycode:
 
 ```bash
 # Установить Certbot
 sudo apt update
 sudo apt install certbot python3-certbot-nginx -y
 
-# Получить сертификат для домена
-sudo certbot --nginx -d ацелотлед.рф -d www.ацелотлед.рф
+# Получить сертификат (используйте Punycode!)
+sudo certbot --nginx -d xn--80aafq0a1a.xn--p1ai -d www.xn--80aafq0a1a.xn--p1ai
+
+# ⚠️ Замените xn--80aafq0a1a.xn--p1ai на ваш реальный Punycode!
 
 # Следовать инструкциям:
 # - Ввести email
 # - Согласиться с условиями
 # - Certbot автоматически обновит конфигурацию Nginx
 ```
+
+**См. также:** `PUNYCODE-FIX.md` для подробной инструкции.
 
 **После установки Certbot автоматически:**
 - Обновит конфигурацию Nginx
