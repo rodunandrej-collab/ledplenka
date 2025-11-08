@@ -200,9 +200,9 @@ sudo nano /etc/nginx/sites-available/ledplenka
 ```nginx
 server {
     listen 80;
-    server_name ваш-домен.ru www.ваш-домен.ru;
-
-    # Если домена нет, используйте IP
+    server_name ацелотлед.рф www.ацелотлед.рф;
+    
+    # Если домен еще не настроен, можно использовать IP:
     # server_name _;
 
     location / {
@@ -217,6 +217,12 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
+```
+
+**Для установки SSL (HTTPS) после настройки DNS:**
+```bash
+sudo apt install certbot python3-certbot-nginx -y
+sudo certbot --nginx -d ацелотлед.рф -d www.ацелотлед.рф
 ```
 
 **Сохраните:** `Ctrl+O`, затем `Enter`, затем `Ctrl+X`
