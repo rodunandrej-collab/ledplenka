@@ -352,6 +352,7 @@ html {
     top: 0;
     left: 0;
     border-radius: 20px;
+    display: block;
 }
 
 .film-strip-1 {
@@ -395,6 +396,7 @@ html {
     .hero-features-visual {
         min-height: 350px;
         overflow-x: hidden;
+        position: relative;
     }
     .led-film-graphic {
         height: 350px;
@@ -403,6 +405,8 @@ html {
         width: 100%;
         max-width: 100%;
         overflow-x: hidden;
+        position: relative;
+        transform: none !important;
     }
     .film-strip {
         width: 100%;
@@ -410,6 +414,16 @@ html {
         height: 200px;
         transform: none !important;
         margin: 0 auto;
+        position: relative;
+        animation: none !important;
+    }
+    .film-strip video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 }
 
@@ -518,6 +532,7 @@ html {
     position: absolute;
     top: 0;
     left: 0;
+    display: block;
 }
 
 .feature-img-1 {
@@ -616,6 +631,7 @@ html {
     position: absolute;
     top: 0;
     left: 0;
+    display: block;
 }
 
 .btn-center {
@@ -685,6 +701,7 @@ html {
     top: 0;
     left: 0;
     border-radius: 20px;
+    display: block;
 }
 
 .layer-visual::before {
@@ -1606,6 +1623,18 @@ html {
         overflow-x: hidden;
     }
     
+    /* Фиксируем все видео на мобильных */
+    video {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    /* Убираем все трансформации и анимации */
+    * {
+        will-change: auto;
+    }
+    
     .header {
         padding: 1rem 0;
     }
@@ -1649,6 +1678,8 @@ html {
         width: 100%;
         max-width: 100%;
         overflow-x: hidden;
+        position: relative;
+        transform: none !important;
     }
     
     .film-strip {
@@ -1657,6 +1688,18 @@ html {
         height: 140px;
         transform: none !important;
         margin: 0 auto;
+        position: relative;
+        animation: none !important;
+    }
+    
+    .film-strip video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
     }
     
     .section-heading,
@@ -1694,6 +1737,25 @@ html {
     
     .feature-image-wrapper {
         height: 200px;
+        position: relative;
+    }
+    
+    .feature-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .feature-img video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
     }
     
     .tech-feature-card h3 {
@@ -1706,6 +1768,26 @@ html {
     
     .principle-card {
         height: 200px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .principle-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .principle-img video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
     }
     
     .cta-buttons {
@@ -1849,6 +1931,17 @@ html {
         width: 100% !important;
         max-width: 100%;
         height: 200px;
+        position: relative;
+    }
+    
+    .layer-visual video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
     }
     
     .layer-info {

@@ -96,20 +96,32 @@ document.querySelectorAll('.question-btn').forEach(btn => {
     });
 });
 
-// LED Film animation
+// LED Film animation - только на десктопе
 function animateLEDFilm() {
-    const strips = document.querySelectorAll('.film-strip');
-    strips.forEach((strip, index) => {
-        strip.style.animation = `float ${3 + index}s ease-in-out infinite`;
-    });
+    if (window.innerWidth > 768) {
+        const strips = document.querySelectorAll('.film-strip');
+        strips.forEach((strip, index) => {
+            strip.style.animation = `float ${3 + index}s ease-in-out infinite`;
+        });
+    }
 }
 
-// Add floating animation for LED strips
+// Add floating animation for LED strips - только на десктопе
 const style = document.createElement('style');
 style.textContent = `
     @keyframes float {
         0%, 100% { transform: translateY(0px) rotate(var(--rotation, 0deg)); }
         50% { transform: translateY(-10px) rotate(var(--rotation, 0deg)); }
+    }
+    
+    @media (max-width: 768px) {
+        .film-strip {
+            animation: none !important;
+            transform: none !important;
+        }
+        .led-film-graphic {
+            transform: none !important;
+        }
     }
 `;
 document.head.appendChild(style);
@@ -119,19 +131,31 @@ if (window.innerWidth > 768) {
     document.querySelectorAll('.film-strip-1').forEach(el => el.style.setProperty('--rotation', '-5deg'));
     document.querySelectorAll('.film-strip-2').forEach(el => el.style.setProperty('--rotation', '2deg'));
     document.querySelectorAll('.film-strip-3').forEach(el => el.style.setProperty('--rotation', '-3deg'));
+    animateLEDFilm();
+} else {
+    // На мобильных отключаем все анимации
+    document.querySelectorAll('.film-strip').forEach(el => {
+        el.style.animation = 'none';
+        el.style.transform = 'none';
+    });
 }
 
-// Remove rotation on resize if mobile
+// Remove rotation and animation on resize if mobile
 window.addEventListener('resize', function() {
     if (window.innerWidth <= 768) {
         document.querySelectorAll('.film-strip').forEach(el => {
             el.style.setProperty('--rotation', '0deg');
             el.style.transform = 'none';
+            el.style.animation = 'none';
         });
+        const ledFilmGraphic = document.querySelector('.led-film-graphic');
+        if (ledFilmGraphic) {
+            ledFilmGraphic.style.transform = 'none';
+        }
+    } else {
+        animateLEDFilm();
     }
 });
-
-animateLEDFilm();
 
 // Form Validation and Submission
 const orderForm = document.getElementById('orderForm');
@@ -335,12 +359,14 @@ phoneInputs.forEach(input => {
     });
 });
 
-// Parallax effect for hero section
+// Parallax effect for hero section - только на десктопе
 window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const ledFilmGraphic = document.querySelector('.led-film-graphic');
-    if (ledFilmGraphic) {
-        ledFilmGraphic.style.transform = `translateY(${scrolled * 0.3}px)`;
+    if (window.innerWidth > 768) {
+        const scrolled = window.pageYOffset;
+        const ledFilmGraphic = document.querySelector('.led-film-graphic');
+        if (ledFilmGraphic) {
+            ledFilmGraphic.style.transform = `translateY(${scrolled * 0.3}px)`;
+        }
     }
 });
 
