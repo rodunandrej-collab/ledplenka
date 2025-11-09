@@ -1827,15 +1827,12 @@ html {
     }
     
     .feature-img {
-        overflow: visible;
-    }
-    
-    .feature-img {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
+        overflow: visible;
     }
     
     .feature-img video {
@@ -1872,15 +1869,12 @@ html {
     }
     
     .principle-img {
-        overflow: visible;
-    }
-    
-    .principle-img {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
+        overflow: visible;
     }
     
     .principle-img video {
