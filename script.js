@@ -1,5 +1,6 @@
-// Prevent video dragging on mobile
+// All initialization code in one DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Prevent video dragging on mobile
     const videos = document.querySelectorAll('video');
     
     videos.forEach(video => {
@@ -24,10 +25,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         video.setAttribute('draggable', 'false');
     });
-});
-
-// Mobile Menu Toggle
-document.addEventListener('DOMContentLoaded', function() {
+    
+    // Mobile Menu Toggle
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
     const nav = document.querySelector('.nav');
     const navLinks = document.querySelectorAll('.nav a');
@@ -57,6 +56,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.body.style.overflow = '';
             }
         });
+        
+        // Close menu when clicking on overlay
+        nav.addEventListener('click', function(e) {
+            if (e.target === nav || e.target.classList.contains('nav')) {
+                nav.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+    
+    // Show cookie notice if not previously closed
+    const cookieNoticeClosed = localStorage.getItem('cookieNoticeClosed');
+    const cookieNotice = document.getElementById('cookieNotice');
+    
+    if (cookieNoticeClosed === 'true' && cookieNotice) {
+        cookieNotice.classList.add('hidden');
     }
 });
 
@@ -244,16 +259,6 @@ function closeCookieNotice() {
         localStorage.setItem('cookieNoticeClosed', 'true');
     }
 }
-
-// Show cookie notice if not previously closed
-document.addEventListener('DOMContentLoaded', function() {
-    const cookieNoticeClosed = localStorage.getItem('cookieNoticeClosed');
-    const cookieNotice = document.getElementById('cookieNotice');
-    
-    if (cookieNoticeClosed === 'true' && cookieNotice) {
-        cookieNotice.classList.add('hidden');
-    }
-});
 
 // Scroll to Top Button
 const addScrollToTopButton = () => {
