@@ -426,6 +426,7 @@ html {
         animation: none !important;
         visibility: visible !important;
         opacity: 1 !important;
+        overflow: visible;
     }
     .film-strip video {
         position: absolute;
@@ -1686,7 +1687,9 @@ html {
     /* Фиксируем все видео на мобильных */
     video {
         max-width: 100%;
-        height: auto;
+        width: 100%;
+        height: 100%;
+        object-fit: contain !important;
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
@@ -1697,7 +1700,9 @@ html {
         pointer-events: none !important;
         -webkit-user-drag: none;
         user-drag: none;
-        position: relative;
+        position: absolute;
+        top: 0;
+        left: 0;
         z-index: 1;
     }
     
@@ -1769,7 +1774,7 @@ html {
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain !important;
         display: block;
         touch-action: none !important;
         -webkit-touch-callout: none !important;
@@ -1818,6 +1823,11 @@ html {
         position: relative;
         visibility: visible !important;
         opacity: 1 !important;
+        overflow: visible;
+    }
+    
+    .feature-img {
+        overflow: visible;
     }
     
     .feature-img {
@@ -1834,7 +1844,7 @@ html {
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain !important;
         display: block;
         touch-action: none !important;
         -webkit-touch-callout: none !important;
@@ -1856,9 +1866,13 @@ html {
     .principle-card {
         height: 200px;
         position: relative;
-        overflow: hidden;
+        overflow: visible;
         visibility: visible !important;
         opacity: 1 !important;
+    }
+    
+    .principle-img {
+        overflow: visible;
     }
     
     .principle-img {
@@ -1875,7 +1889,7 @@ html {
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain !important;
         display: block;
         touch-action: none !important;
         -webkit-touch-callout: none !important;
@@ -2030,6 +2044,11 @@ html {
         position: relative;
         visibility: visible !important;
         opacity: 1 !important;
+        overflow: visible;
+    }
+    
+    .layer-visual {
+        overflow: visible;
     }
     
     .layer-visual video {
@@ -2038,7 +2057,7 @@ html {
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain !important;
         display: block;
         touch-action: none !important;
         -webkit-touch-callout: none !important;
