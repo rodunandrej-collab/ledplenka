@@ -1,3 +1,31 @@
+// Prevent video dragging on mobile
+document.addEventListener('DOMContentLoaded', function() {
+    const videos = document.querySelectorAll('video');
+    
+    videos.forEach(video => {
+        // Prevent touch events that could cause dragging
+        video.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        video.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        video.addEventListener('touchend', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        // Prevent drag events
+        video.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        video.setAttribute('draggable', 'false');
+    });
+});
+
 // Mobile Menu Toggle
 document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
