@@ -342,6 +342,9 @@ html {
     border: 1px solid rgba(139, 92, 246, 0.3);
     overflow: hidden;
     flex-shrink: 0;
+    touch-action: none;
+    -webkit-user-drag: none;
+    user-drag: none;
 }
 
 .film-strip video {
@@ -353,6 +356,11 @@ html {
     left: 0;
     border-radius: 20px;
     display: block;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: none;
 }
 
 .film-strip-1 {
@@ -514,6 +522,9 @@ html {
     position: relative;
     height: 250px;
     background: var(--card-bg-light);
+    touch-action: none;
+    -webkit-user-drag: none;
+    user-drag: none;
 }
 
 .feature-img {
@@ -533,6 +544,11 @@ html {
     top: 0;
     left: 0;
     display: block;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: none;
 }
 
 .feature-img-1 {
@@ -609,6 +625,9 @@ html {
     border-radius: 20px;
     overflow: hidden;
     transition: transform 0.3s;
+    touch-action: none;
+    -webkit-user-drag: none;
+    user-drag: none;
 }
 
 .principle-card:hover {
@@ -632,6 +651,11 @@ html {
     top: 0;
     left: 0;
     display: block;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: none;
 }
 
 .btn-center {
@@ -691,6 +715,9 @@ html {
     backdrop-filter: blur(10px);
     box-shadow: 0 10px 40px rgba(139, 92, 246, 0.3);
     overflow: hidden;
+    touch-action: none;
+    -webkit-user-drag: none;
+    user-drag: none;
 }
 
 .layer-visual video {
@@ -702,6 +729,11 @@ html {
     left: 0;
     border-radius: 20px;
     display: block;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: none;
 }
 
 .layer-visual::before {
@@ -1654,6 +1686,13 @@ html {
         max-width: 100%;
         height: auto;
         display: block;
+        touch-action: none !important;
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        user-select: none !important;
+        pointer-events: none !important;
+        -webkit-user-drag: none;
+        user-drag: none;
     }
     
     /* Убираем все трансформации и анимации */
@@ -1726,6 +1765,13 @@ html {
         height: 100%;
         object-fit: cover;
         display: block;
+        touch-action: none !important;
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        user-select: none !important;
+        pointer-events: none !important;
+        -webkit-user-drag: none;
+        user-drag: none;
     }
     
     .section-heading,
@@ -1782,6 +1828,13 @@ html {
         height: 100%;
         object-fit: cover;
         display: block;
+        touch-action: none !important;
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        user-select: none !important;
+        pointer-events: none !important;
+        -webkit-user-drag: none;
+        user-drag: none;
     }
     
     .tech-feature-card h3 {
@@ -1814,6 +1867,13 @@ html {
         height: 100%;
         object-fit: cover;
         display: block;
+        touch-action: none !important;
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        user-select: none !important;
+        pointer-events: none !important;
+        -webkit-user-drag: none;
+        user-drag: none;
     }
     
     .cta-buttons {
@@ -1968,6 +2028,13 @@ html {
         height: 100%;
         object-fit: cover;
         display: block;
+        touch-action: none !important;
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        user-select: none !important;
+        pointer-events: none !important;
+        -webkit-user-drag: none;
+        user-drag: none;
     }
     
     .layer-info {
