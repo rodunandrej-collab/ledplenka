@@ -1755,22 +1755,6 @@ html {
     }
     
     .hero-features-visual {
-        min-height: 250px;
-        margin: 2rem 0;
-    }
-    
-    .led-film-graphic {
-        height: 250px;
-        flex-direction: column;
-        gap: 0.8rem;
-        width: 100%;
-        max-width: 100%;
-        overflow-x: hidden;
-        position: relative;
-        transform: none !important;
-    }
-    
-    .hero-features-visual {
         min-height: 180px;
         margin: 2rem 0;
         overflow-x: auto;
